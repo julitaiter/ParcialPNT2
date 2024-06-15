@@ -1,4 +1,4 @@
-# parcial-taiter
+# tp-3
 
 ## Project setup
 ```
