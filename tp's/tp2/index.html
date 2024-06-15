@@ -9,59 +9,94 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
-
 </head>
 
-
-<div class="container-fluid mt-3" id="app">
-    <input type="text" class="form-control" v-model="criterioDeBusqueda" placeholder="Ingresar un criterio de busqueda...">
-    <br>
-    <div class="card-deck m-0">
-        <div class="row">
-            <div class="col" v-for="persona in personasFiltradas">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
-                        <p class="card-text">dni {{persona.dni}}</p>
-                        <a href="#" class="card-link">{{persona.correo}}</a>
+<body>
+    <div class="container-fluid mt-3" id="app">
+        <input type="text" class="form-control" v-model="criterioDeBusquedaNombre" placeholder="Buscar por nombre...">
+        <br>
+        <input type="text" class="form-control" v-model="criterioDeBusquedaDni" placeholder="Buscar por DNI...">
+        <br>
+        <div class="alert alert-warning" role="alert" v-if="mostrarAlert">
+            Debe ingresar al menos 3 caracteres en uno de los filtros.
+        </div>
+        <div class="card-deck m-0">
+            <div class="row">
+                <div class="col" v-for="persona in personasFiltradas" :key="persona.dni">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ getNombreCompleto(persona) }}</h5>
+                            <p class="card-text">dni {{ persona.dni }}</p>
+                            <a href="#" class="card-link">{{ persona.correo }}</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-</div>
-
-</html>
-
-<script>
-    new Vue({
-        el: '#app',
-        data: {
-            criterioDeBusqueda: '',
-            //Aquí, en este array es donde tienen que agregar su información
-            personas:
-                [
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                criterioDeBusquedaNombre: '',
+                criterioDeBusquedaDni: '',
+                // Aquí, en este array es donde tienen que agregar su información
+                personas: [
                     { nombre: 'Daniel', apellido: 'Sánchez', dni: 20442873, correo: 'danielsanchez68@hotmail.com' },
                     { nombre: 'Lionel', apellido: 'Messi', dni: 33016244, correo: 'lionel.messi@gmail.com' },
                     { nombre: 'Emiliano', apellido: 'Martínez', dni: 35418290, correo: 'dibu23@hotmail.com' },
                     { nombre: 'Ángel', apellido: 'Di María', dni: 33472815, correo: 'fideo.dimaria@yahoo.com' },
                     { nombre: 'Julián', apellido: 'Álvarez', dni: 42260908, correo: 'juli_alvarez@gmail.com' },
-                    //Agregar aquí nombre, apellido, dni y correo en formato objeto 
+                    // Agregar aquí nombre, apellido, dni y correo en formato objeto
                 ]
-        },
-        computed: {
-            personasFiltradas() {
-                return this.personas.filter((persona) => {
-                    let registroCompleto = `${persona.nombre}${persona.apellido}${persona.dni}${persona.correo}`
-                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
-                });
+            },
+            computed: {
+                mostrarAlert() {
+                    return (
+                        (this.criterioDeBusquedaNombre.length > 0 && this.criterioDeBusquedaNombre.length < 3) ||
+                        (this.criterioDeBusquedaDni.length > 0 && this.criterioDeBusquedaDni.length < 3)
+                    );
+                },
+                personasFiltradas() {
+                    if (this.mostrarAlert) {
+                        return [];
+                    }
+
+                    // Filtro por ambos criterios si ambos no están vacíos
+                    if (this.criterioDeBusquedaNombre && this.criterioDeBusquedaDni) {
+                        return this.personas.filter(persona => {
+                            let nombreCompleto = `${persona.nombre} ${persona.apellido}`.toLowerCase();
+                            return nombreCompleto.includes(this.criterioDeBusquedaNombre.toLowerCase()) &&
+                                persona.dni.toString().includes(this.criterioDeBusquedaDni);
+                        });
+                    }
+                    // Filtro por nombre si el criterio de búsqueda por nombre no está vacío
+                    else if (this.criterioDeBusquedaNombre) {
+                        return this.personas.filter(persona => {
+                            let nombreCompleto = `${persona.nombre} ${persona.apellido}`.toLowerCase();
+                            return nombreCompleto.includes(this.criterioDeBusquedaNombre.toLowerCase());
+                        });
+                    }
+                    // Filtro por DNI si el criterio de búsqueda por DNI no está vacío
+                    else if (this.criterioDeBusquedaDni) {
+                        return this.personas.filter(persona => {
+                            return persona.dni.toString().includes(this.criterioDeBusquedaDni);
+                        });
+                    }
+                    // Si no hay criterio de búsqueda, devuelve todas las personas
+                    else {
+                        return this.personas;
+                    }
+                }
+            },
+            methods: {
+                getNombreCompleto(persona) {
+                    return `${persona.nombre} ${persona.apellido}`;
+                }
             }
-        },
-        methods: {
-            getNombreCompleto(persona) {
-                return `${persona.nombre} ${persona.apellido}`
-            }
-        }
-    });
-</script>
+        });
+    </script>
+</body>
+
+</html>
