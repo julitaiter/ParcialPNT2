@@ -32,7 +32,6 @@
 <script>
 import axios from 'axios';
 
-
 export default {
     name: 'App',
     data() {
@@ -57,7 +56,7 @@ export default {
             try {
                 const response = await axios.get('https://api.bluelytics.com.ar/v2/latest')
                 this.cotizacion = response.data.blue.value_sell
-                this.ultimoUpdate = Date.now()
+                this.ultimaActualizacion = this.obtenerFechaHoraActual()
             } catch (error) {
                 console.error('Error al obtener la cotización y actualizar:', error);
             }
@@ -81,6 +80,31 @@ export default {
             } else {
                 clearInterval(this.intervalId);
             }
+        },
+        obtenerFechaHoraActual() {
+            const ahora = new Date();
+
+            // Obtener día, mes y año
+            let dia = ahora.getDate();
+            let mes = ahora.getMonth() + 1; // Los meses van de 0 a 11, por lo tanto se suma 1
+            let año = ahora.getFullYear();
+
+            // Obtener hora, minutos y segundos
+            let horas = ahora.getHours();
+            let minutos = ahora.getMinutes();
+            let segundos = ahora.getSeconds();
+
+            // Asegurarse de que los valores tengan dos dígitos
+            dia = (dia < 10) ? '0' + dia : dia;
+            mes = (mes < 10) ? '0' + mes : mes;
+            horas = (horas < 10) ? '0' + horas : horas;
+            minutos = (minutos < 10) ? '0' + minutos : minutos;
+            segundos = (segundos < 10) ? '0' + segundos : segundos;
+
+            // Formatear la fecha y hora
+            const fechaHoraFormateada = `${dia}/${mes}/${año} ${horas}:${minutos}:${segundos}`;
+
+            return fechaHoraFormateada;
         }
     },
     created() {
