@@ -1,25 +1,16 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Vue App</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <router-link class="nav-link" to="/">Formulario</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/usuarios">Usuarios</router-link>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <router-view/>
+    <Navbar/>
   </div>
 </template>
 
 <script>
+import Navbar from './components/views/Navbar.vue'
 export default {
-  name: 'App'
+  name: 'App',
+  components:{
+    Navbar
+  }
 }
 </script>
 

@@ -1,21 +1,15 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import FormularioVista from '@/views/FormularioVista.vue'
 import UsuariosVista from '@/views/UsuariosVista.vue'
 
-Vue.use(Router)
+const routes = [
+  { path: '/', component: FormularioVista },
+  { path: '/usuarios', component: UsuariosVista },
+]
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Formulario',
-      component: FormularioVista
-    },
-    {
-      path: '/usuarios',
-      name: 'Usuarios',
-      component: UsuariosVista
-    }
-  ]
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
 })
+
+export default router
